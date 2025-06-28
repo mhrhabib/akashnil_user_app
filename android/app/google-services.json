@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "794636961402",
+    "project_id": "akasnil-6495d",
+    "storage_bucket": "akasnil-6495d.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794636961402:android:ca666def7c5faa5068ddc3",
+        "android_client_info": {
+          "package_name": "com.akasnil.userapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzvuoFuXxtH5JsDSRjbfGGGAxNf2hA-Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:794636961402:android:a00ecff41d5acc7e68ddc3",
+        "android_client_info": {
+          "package_name": "com.sixamtech.sixvalley"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzvuoFuXxtH5JsDSRjbfGGGAxNf2hA-Z4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
