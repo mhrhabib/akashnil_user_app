@@ -27,15 +27,26 @@ class _AuthScreenState extends State<AuthScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return PopScope(
-      canPop: false,
-      onPopInvoked: (val) async {
-        if (Provider.of<AuthController>(context, listen: false).selectedIndex != 0) {
-          Provider.of<AuthController>(context, listen: false).updateSelectedIndex(0);
+      canPop: false, // Disable default back behavior
+      onPopInvoked: (didPop) async {
+        if (didPop) return; // If already popped, do nothing
+
+        final authController = Provider.of<AuthController>(context, listen: false);
+
+        if (authController.selectedIndex != 0) {
+          // If not on the first tab, switch to it instead of popping
+          authController.updateSelectedIndex(0);
         } else {
+          // If on first tab, handle back press
           if (Navigator.canPop(context)) {
-            Navigator.of(context).pop();
+            Navigator.pop(context);
           } else {
-            showModalBottomSheet(backgroundColor: Colors.transparent, context: context, builder: (_) => const AppExitCard());
+            // Show exit confirmation
+            final shouldExit = await showModalBottomSheet<bool>(backgroundColor: Colors.transparent, context: context, builder: (_) => const AppExitCard()) ?? false;
+
+            if (shouldExit && mounted) {
+              Navigator.pop(context);
+            }
           }
         }
       },
