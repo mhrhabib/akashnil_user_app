@@ -60,8 +60,18 @@ final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 Future<void> main() async {
   HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
-  if (Firebase.apps.isEmpty) {
-    await Firebase.initializeApp(name: 'akasnil', options: DefaultFirebaseOptions.currentPlatform);
+  // Replace your current initialization with this:
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(name: 'akasnil', options: DefaultFirebaseOptions.currentPlatform);
+      print('Firebase initialized successfully');
+    } else {
+      // If apps aren't empty, just use the existing app
+      Firebase.app('akasnil');
+      print('Using existing Firebase app');
+    }
+  } catch (e) {
+    print('Error initializing Firebase: $e');
   }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await di.init();
@@ -75,7 +85,16 @@ Future<void> main() async {
       body = NotificationHelper.convertNotification(remoteMessage.data);
     }
     await NotificationHelper.initialize(flutterLocalNotificationsPlugin);
+    // Set up foreground message handler
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      print('Foreground message received: ${message.notification?.title}');
+      NotificationHelper.showNotification(message, flutterLocalNotificationsPlugin, false);
+    });
     FirebaseMessaging.onBackgroundMessage(myBackgroundMessageHandler);
+    FirebaseMessaging.onMessageOpenedApp.listen((RemoteMessage message) {
+      print('App opened from notification');
+      // Handle notification click
+    });
   } catch (_) {}
 
   await NotificationHelper.initialize(flutterLocalNotificationsPlugin);

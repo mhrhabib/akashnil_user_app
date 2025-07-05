@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sixvalley_ecommerce/features/deal/controllers/featured_deal_controller.dart';
 import 'package:flutter_sixvalley_ecommerce/features/deal/controllers/flash_deal_controller.dart';
@@ -103,7 +106,14 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      log('Foreground message received: ${message.messageId}');
+      log('Title: ${message.notification?.title}');
+      log('Body: ${message.notification?.body}');
+      log('Data: ${message.data}');
 
+      // Rest of your handling...
+    });
     isGuestMode = !Provider.of<AuthController>(context, listen: false).isLoggedIn();
 
     singleVendor = Provider.of<SplashController>(context, listen: false).configModel!.businessMode == "single";
@@ -250,7 +260,7 @@ class _HomePageState extends State<HomePage> {
                                         Container(
                                           width: MediaQuery.of(context).size.width,
                                           height: 150,
-                                          color: Provider.of<ThemeController>(context, listen: false).darkTheme ? Theme.of(context).primaryColor.withOpacity(.20) : Theme.of(context).primaryColor.withOpacity(.125),
+                                          color: Provider.of<ThemeController>(context, listen: false).darkTheme ? Theme.of(context).primaryColor.withValues(alpha: .20) : Theme.of(context).primaryColor.withValues(alpha: .125),
                                         ),
                                         Padding(
                                           padding: const EdgeInsets.only(bottom: Dimensions.homePagePadding),

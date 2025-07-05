@@ -1,3 +1,15 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+    dependencies {
+        classpath("com.android.tools.build:gradle:7.3.1") // Match your Android Studio version
+        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22") // Match your Kotlin version
+        classpath("com.google.gms:google-services:4.3.15") // Firebase services plugin
+    }
+}
+
 allprojects {
     repositories {
         google()

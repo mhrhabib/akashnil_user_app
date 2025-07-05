@@ -144,41 +144,39 @@ class FlashDealShimmer extends StatelessWidget {
                     baseColor: Theme.of(context).cardColor,
                     highlightColor: Colors.grey[100]!,
                     enabled: true,
-                    child: FittedBox(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          Container(
-                            height: ResponsiveHelper.isTab(context) ? 300 : 120,
-                            padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
-                            decoration: BoxDecoration(color: ColorResources.iconBg(), borderRadius: BorderRadius.circular(10)),
-                          ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Container(
+                          height: ResponsiveHelper.isTab(context) ? 200 : 120,
+                          padding: const EdgeInsets.all(Dimensions.paddingSizeLarge),
+                          decoration: BoxDecoration(color: ColorResources.iconBg(), borderRadius: BorderRadius.circular(10)),
+                        ),
 
-                          Padding(
-                            padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  children: [
-                                    Container(height: 10, width: 50, color: ColorResources.white),
-                                    const Icon(Icons.star, color: Colors.orange, size: 15),
-                                  ],
-                                ),
-                                const SizedBox(height: Dimensions.paddingSizeExtraSmall),
-                                Container(height: Dimensions.paddingSizeLarge, color: Theme.of(context).cardColor),
-                                const SizedBox(height: Dimensions.paddingSizeEight),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(horizontal: 50),
-                                  child: Container(height: Dimensions.paddingSizeLarge, color: Theme.of(context).cardColor),
-                                ),
-                              ],
-                            ),
+                        Padding(
+                          padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(height: 10, width: 50, color: ColorResources.white),
+                                  const Icon(Icons.star, color: Colors.orange, size: 15),
+                                ],
+                              ),
+                              const SizedBox(height: Dimensions.paddingSizeExtraSmall),
+                              Container(height: Dimensions.paddingSizeLarge, color: Theme.of(context).cardColor),
+                              const SizedBox(height: Dimensions.paddingSizeEight),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 50),
+                                child: Container(height: Dimensions.paddingSizeLarge, color: Theme.of(context).cardColor),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

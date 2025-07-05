@@ -13,144 +13,180 @@ class SearchProductController with ChangeNotifier {
   final SearchProductServiceInterface? searchProductServiceInterface;
   SearchProductController({required this.searchProductServiceInterface});
 
+  // State variables
   int _filterIndex = 0;
   List<String> _historyList = [];
+  bool _isClear = true;
+  bool _isLoading = false;
+  bool _isSearching = false;
+  ProductModel? searchedProduct;
+  SuggestionModel? suggestionModel;
+  List<String> nameList = [];
+  List<int> idList = [];
+  int selectedSearchedProductId = 0;
+  final TextEditingController searchController = TextEditingController();
 
-  int get filterIndex => _filterIndex;
-  List<String> get historyList => _historyList;
-
+  // Filter variables
+  bool filterApply = false;
+  String sortText = 'low-high';
   double minPriceForFilter = AppConstants.minFilter;
   double maxPriceForFilter = AppConstants.maxFilter;
+  double minFilterValue = 0;
+  double maxFilterValue = 0;
 
-  void setMinMaxPriceForFilter(RangeValues currentRangeValues){
+  // Getters
+  int get filterIndex => _filterIndex;
+  List<String> get historyList => _historyList;
+  bool get isClear => _isClear;
+  bool get isLoading => _isLoading;
+  bool get isSearching => _isSearching;
+
+  // Search methods
+  void cleanSearchProduct({bool notify = true}) {
+    searchedProduct = null;
+    _isClear = true;
+    if (notify) notifyListeners();
+  }
+
+  Future<void> searchProduct({required String query, String? categoryIds, String? brandIds, String? sort, String? priceMin, String? priceMax, required int offset}) async {
+    if (query.isEmpty) {
+      cleanSearchProduct();
+      return;
+    }
+
+    _isLoading = true;
+    _isSearching = true;
+    notifyListeners();
+
+    try {
+      ApiResponse apiResponse = await searchProductServiceInterface!.getSearchProductList(query, categoryIds, brandIds, sort ?? sortText, priceMin ?? minPriceForFilter.toStringAsFixed(2), priceMax ?? maxPriceForFilter.toStringAsFixed(2), offset);
+
+      if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
+        if (offset == 1) {
+          searchedProduct = ProductModel.fromJson(apiResponse.response!.data);
+        } else {
+          searchedProduct = ProductModel(
+            products: [...?searchedProduct?.products, ...?ProductModel.fromJson(apiResponse.response!.data).products],
+            offset: ProductModel.fromJson(apiResponse.response!.data).offset,
+            totalSize: ProductModel.fromJson(apiResponse.response!.data).totalSize,
+          );
+        }
+        _isClear = false;
+      } else {
+        ApiChecker.checkApi(apiResponse);
+        searchedProduct = null;
+      }
+    } catch (e) {
+      debugPrint('Search error: $e');
+      searchedProduct = null;
+    } finally {
+      _isLoading = false;
+      _isSearching = false;
+      notifyListeners();
+    }
+  }
+
+  // Suggestion methods
+  Future<void> getSuggestionProductName(String name) async {
+    if (name.isEmpty) {
+      suggestionModel = null;
+      nameList.clear();
+      idList.clear();
+      notifyListeners();
+      return;
+    }
+
+    ApiResponse apiResponse = await searchProductServiceInterface!.getSearchProductName(name);
+    if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
+      nameList.clear();
+      idList.clear();
+      suggestionModel = SuggestionModel.fromJson(apiResponse.response?.data);
+
+      for (var product in suggestionModel!.products!) {
+        nameList.add(product.name!);
+        idList.add(product.id!);
+      }
+      notifyListeners();
+    }
+  }
+
+  // History methods
+  void initHistoryList() {
+    _historyList = searchProductServiceInterface!.getSavedSearchProductName();
+    notifyListeners();
+  }
+
+  Future<void> saveSearchAddress(String searchAddress) async {
+    if (searchAddress.trim().isEmpty) return;
+
+    await searchProductServiceInterface!.saveSearchProductName(searchAddress);
+    if (!_historyList.contains(searchAddress)) {
+      _historyList.insert(0, searchAddress);
+      notifyListeners();
+    }
+  }
+
+  Future<void> clearSearchAddress() async {
+    await searchProductServiceInterface!.clearSavedSearchProductName();
+    _historyList.clear();
+    notifyListeners();
+  }
+
+  // Filter methods
+  void setFilterIndex(int index) {
+    _filterIndex = index;
+    switch (index) {
+      case 0:
+        sortText = 'latest';
+        break;
+      case 1:
+        sortText = 'a-z';
+        break;
+      case 2:
+        sortText = 'z-a';
+        break;
+      case 3:
+        sortText = 'low-high';
+        break;
+      case 4:
+        sortText = 'high-low';
+        break;
+    }
+    notifyListeners();
+  }
+
+  void setFilterApply() {
+    filterApply = true;
+    notifyListeners();
+  }
+
+  void setMinMaxPriceForFilter(RangeValues currentRangeValues) {
     minPriceForFilter = currentRangeValues.start;
     maxPriceForFilter = currentRangeValues.end;
     notifyListeners();
   }
 
-  bool filterApply = false;
-  void setFilterApply(){
-    filterApply = true;
-    notifyListeners();
+  void setFilterValue(double min, double max) {
+    minFilterValue = min;
+    maxFilterValue = max;
   }
 
-  String sortText = 'low-high';
-  void setFilterIndex(int index) {
-    _filterIndex = index;
-    if(index == 0){
-      sortText = 'latest';
-    }else if(index == 1){
-      sortText = 'a-z';
-    }else if(index == 2){
-      sortText = 'z-a';
-    }
-    else if(index == 3){
-      sortText = 'low-high';
-    }else if(index ==4){
-      sortText = 'high-low';
-    }
-    notifyListeners();
-  }
+  // Product selection
+  void setSelectedProductId(int index, int? compareId) {
+    if (suggestionModel?.products?.isNotEmpty ?? false) {
+      selectedSearchedProductId = suggestionModel!.products![index].id!;
 
-  double minFilterValue = 0;
-  double maxFilterValue = 0;
-  void setFilterValue(double min, double max){
-  minFilterValue = min;
-  maxFilterValue = max;
-  }
-
-
-
-  bool _isClear = true;
-  bool get isClear => _isClear;
-
-  void cleanSearchProduct({bool notify = false}) {
-    searchedProduct = null;
-    _isClear = true;
-    if(notify){
+      final compareController = Provider.of<CompareController>(Get.context!, listen: false);
+      if (compareId != null) {
+        compareController.replaceCompareList(compareId, selectedSearchedProductId);
+      } else {
+        compareController.addCompareList(selectedSearchedProductId);
+      }
       notifyListeners();
     }
   }
 
-
-
-
-
-
-  ProductModel? searchedProduct;
-  Future searchProduct({required String query, String? categoryIds, String? brandIds, String? sort, String? priceMin, String? priceMax, required int offset}) async {
-    searchController.text = query;
-    ApiResponse apiResponse = await searchProductServiceInterface!.getSearchProductList(query, categoryIds, brandIds, sort, priceMin, priceMax, offset);
-    if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
-      if(offset == 1){
-        searchedProduct = null;
-        if(ProductModel.fromJson(apiResponse.response!.data).products != null){
-          searchedProduct = ProductModel.fromJson(apiResponse.response!.data);
-        }
-      }else{
-        if(ProductModel.fromJson(apiResponse.response!.data).products != null){
-          searchedProduct?.products?.addAll(ProductModel.fromJson(apiResponse.response!.data).products!) ;
-          searchedProduct?.offset = (ProductModel.fromJson(apiResponse.response!.data).offset) ;
-          searchedProduct?.totalSize = (ProductModel.fromJson(apiResponse.response!.data).totalSize) ;
-        }
-      }
-    } else {
-      ApiChecker.checkApi( apiResponse);
-    }
-    notifyListeners();
+  void disposeController() {
+    searchController.dispose();
   }
-
-
-  TextEditingController searchController = TextEditingController();
-  SuggestionModel? suggestionModel;
-  List<String> nameList = [];
-  List<int> idList = [];
-  Future<void> getSuggestionProductName(String name) async {
-
-    ApiResponse apiResponse = await searchProductServiceInterface!.getSearchProductName(name);
-    if (apiResponse.response != null && apiResponse.response!.statusCode == 200) {
-      nameList = [];
-      idList = [];
-      suggestionModel = SuggestionModel.fromJson(apiResponse.response?.data);
-      for(int i=0; i< suggestionModel!.products!.length; i++){
-        nameList.add(suggestionModel!.products![i].name!);
-        idList.add(suggestionModel!.products![i].id!);
-      }
-    }
-    notifyListeners();
-  }
-
-  void initHistoryList() {
-    _historyList = [];
-    _historyList.addAll(searchProductServiceInterface!.getSavedSearchProductName());
-
-  }
-
-  int selectedSearchedProductId = 0;
-  void setSelectedProductId(int index, int? compareId){
-    if(suggestionModel!.products!.isNotEmpty){
-      selectedSearchedProductId = suggestionModel!.products![index].id!;
-    }
-    if(compareId != null){
-      Provider.of<CompareController>(Get.context!, listen: false).replaceCompareList(compareId ,selectedSearchedProductId);
-    }else{
-      Provider.of<CompareController>(Get.context!, listen: false).addCompareList(selectedSearchedProductId);
-    }
-    notifyListeners();
-  }
-
-  void saveSearchAddress(String searchAddress) async {
-    searchProductServiceInterface!.saveSearchProductName(searchAddress);
-    if (!_historyList.contains(searchAddress)) {
-      _historyList.add(searchAddress);
-    }
-    notifyListeners();
-  }
-
-  void clearSearchAddress() async {
-    searchProductServiceInterface!.clearSavedSearchProductName();
-    _historyList = [];
-    notifyListeners();
-  }
-
 }
