@@ -15,4 +15,13 @@
     <style name="NormalTheme" parent="@android:style/Theme.Light.NoTitleBar">
         <item name="android:windowBackground">?android:colorBackground</item>
     </style>
+    <style name="FacebookDialogTheme" parent="Theme.AppCompat.Light.Dialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+    <string name="facebook_app_id">1814347719120929</string>
+    <string name="app_name">akasnil_user</string>
+     <string name="fb_login_protocol_scheme">fb1814347719120929</string>
+    <string name="facebook_client_token">4dcd6cadb3ce63f9a62506c0b868e098</string>
 </resources>

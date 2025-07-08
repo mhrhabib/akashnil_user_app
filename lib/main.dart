@@ -1,8 +1,10 @@
 import 'dart:io';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_downloader/flutter_downloader.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_sixvalley_ecommerce/features/auth/controllers/facebook_login_controller.dart';
@@ -58,21 +60,28 @@ final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterL
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> main() async {
-  HttpOverrides.global = MyHttpOverrides();
   WidgetsFlutterBinding.ensureInitialized();
+
+  HttpOverrides.global = MyHttpOverrides();
   // Replace your current initialization with this:
-  try {
-    if (Firebase.apps.isEmpty) {
-      await Firebase.initializeApp(name: 'akasnil', options: DefaultFirebaseOptions.currentPlatform);
-      print('Firebase initialized successfully');
-    } else {
-      // If apps aren't empty, just use the existing app
-      Firebase.app('akasnil');
-      print('Using existing Firebase app');
-    }
-  } catch (e) {
-    print('Error initializing Firebase: $e');
+
+  await _initializeFirebase();
+  // Initialize Facebook plugin for web
+  if (kIsWeb) {
+    await FacebookAuth.instance.webAndDesktopInitialize(appId: "1814347719120929", cookie: true, xfbml: true, version: "v13.0");
   }
+  // try {
+  //   if (Firebase.apps.isEmpty) {
+  //     await Firebase.initializeApp(name: 'akasnil', options: DefaultFirebaseOptions.currentPlatform);
+  //     print('Firebase initialized successfully');
+  //   } else {
+  //     // If apps aren't empty, just use the existing app
+  //     Firebase.app('akasnil');
+  //     print('Using existing Firebase app');
+  //   }
+  // } catch (e) {
+  //   print('Error initializing Firebase: $e');
+  // }
   await FlutterDownloader.initialize(debug: true, ignoreSsl: true);
   await di.init();
 
@@ -184,5 +193,25 @@ class MyHttpOverrides extends HttpOverrides {
   @override
   HttpClient createHttpClient(SecurityContext? context) {
     return super.createHttpClient(context)..badCertificateCallback = (X509Certificate cert, String host, int port) => true;
+  }
+}
+
+Future<void> _initializeFirebase() async {
+  try {
+    if (Firebase.apps.isEmpty) {
+      await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+      print('Firebase initialized successfully');
+    } else {
+      // Use existing app if already initialized
+      Firebase.app();
+      print('Using existing Firebase app');
+    }
+
+    // Verify initialization
+    final FirebaseApp app = Firebase.app();
+    print('Initialized default app ${app.name}');
+  } catch (e) {
+    print('Error initializing Firebase: $e');
+    rethrow; // Important to see initialization errors during development
   }
 }

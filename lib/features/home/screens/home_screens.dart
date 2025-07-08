@@ -51,8 +51,6 @@ import 'package:flutter_sixvalley_ecommerce/features/shop/widgets/top_seller_vie
 import 'package:flutter_sixvalley_ecommerce/features/shop/screens/all_shop_screen.dart';
 import 'package:provider/provider.dart';
 
-import '../../auth/screens/auth_screen.dart';
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -168,28 +166,28 @@ class _HomePageState extends State<HomePage> {
               SliverToBoxAdapter(
                 child: Column(
                   children: [
-                    if (isGuestMode)
-                      Container(
-                        padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
-                        margin: EdgeInsets.only(bottom: 8),
-                        color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
-                        child: Row(
-                          children: [
-                            const Icon(Icons.info_outline, color: Colors.orange),
-                            const SizedBox(width: Dimensions.paddingSizeSmall),
-                            Expanded(child: Text(getTranslated('You are browsing in guest mode', context) ?? 'You are browsing in guest mode', style: textRegular)),
-                            TextButton(
-                              onPressed: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthScreen()));
-                              },
-                              child: Text(
-                                getTranslated('sign_in', context) ?? 'Sign In',
-                                style: textRegular.copyWith(color: Theme.of(context).primaryColor, decoration: TextDecoration.underline),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    // if (isGuestMode)
+                    //   Container(
+                    //     padding: const EdgeInsets.all(Dimensions.paddingSizeSmall),
+                    //     margin: EdgeInsets.only(bottom: 8),
+                    //     color: Theme.of(context).primaryColor.withValues(alpha: 0.1),
+                    //     child: Row(
+                    //       children: [
+                    //         const Icon(Icons.info_outline, color: Colors.orange),
+                    //         const SizedBox(width: Dimensions.paddingSizeSmall),
+                    //         Expanded(child: Text(getTranslated('You are browsing in guest mode', context) ?? 'You are browsing in guest mode', style: textRegular)),
+                    //         TextButton(
+                    //           onPressed: () {
+                    //             Navigator.push(context, MaterialPageRoute(builder: (context) => const AuthScreen()));
+                    //           },
+                    //           child: Text(
+                    //             getTranslated('sign_in', context) ?? 'Sign In',
+                    //             style: textRegular.copyWith(color: Theme.of(context).primaryColor, decoration: TextDecoration.underline),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
                     // ... rest of your existing widgets
                   ],
                 ),

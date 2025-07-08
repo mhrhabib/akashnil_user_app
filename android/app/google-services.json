@@ -12,7 +12,20 @@
           "package_name": "com.akasnil.userapp"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "794636961402-5vknep440h052tp2v19vo44ghhfsn5gv.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.akasnil.userapp",
+            "certificate_hash": "e29c66fb6a13a9f8c914cf472a21a6dbde355fd1"
+          }
+        },
+        {
+          "client_id": "794636961402-orghg86m99slhvkmjnl8cir7ouh945db.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDzvuoFuXxtH5JsDSRjbfGGGAxNf2hA-Z4"
@@ -20,18 +33,35 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "794636961402-orghg86m99slhvkmjnl8cir7ouh945db.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "794636961402-4cgijh329mrsnt0e2kvqjuj6rhi5nj79.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.akasnil.userapp"
+              }
+            }
+          ]
         }
       }
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:794636961402:android:a00ecff41d5acc7e68ddc3",
+        "mobilesdk_app_id": "1:794636961402:android:4d41b5b75dd53e9568ddc3",
         "android_client_info": {
-          "package_name": "com.sixamtech.sixvalley"
+          "package_name": "com.akasnil.vendor"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "794636961402-orghg86m99slhvkmjnl8cir7ouh945db.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyDzvuoFuXxtH5JsDSRjbfGGGAxNf2hA-Z4"
@@ -39,7 +69,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "794636961402-orghg86m99slhvkmjnl8cir7ouh945db.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "794636961402-4cgijh329mrsnt0e2kvqjuj6rhi5nj79.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.akasnil.userapp"
+              }
+            }
+          ]
         }
       }
     }

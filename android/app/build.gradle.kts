@@ -59,6 +59,7 @@ dependencies {
     implementation("com.google.firebase:firebase-auth")
     implementation("com.google.firebase:firebase-firestore")
     implementation("com.google.firebase:firebase-messaging-ktx") // Add this for FCM
+    implementation("com.facebook.android:facebook-login:latest.release")
     
     // Other recommended dependencies
     implementation("androidx.multidex:multidex:2.0.1")
